@@ -30,7 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @SpringBootTest(classes = StoreApp.class)
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(username="admin", authorities={"ROLE_ADMIN"},
+        password = "admin")
 public class OrderItemResourceIT {
     private static final Integer DEFAULT_QUANTITY = 0;
     private static final Integer UPDATED_QUANTITY = 1;
