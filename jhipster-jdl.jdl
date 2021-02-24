@@ -48,6 +48,7 @@ enum OrderItemStatus {
    entity Invoice {
                date Instant required
                details String
+               code String required
                status InvoiceStatus required
                paymentMethod PaymentMethod required
                paymentDate Instant required
@@ -66,18 +67,18 @@ enum OrderItemStatus {
 }
 
 relationship OneToOne {
-                Customer{user(login)} to User
+                Customer{user(login) required} to User
 }
 
 relationship ManyToOne {
-                OrderItem{product(name)} to Product
+                OrderItem{product(name) required} to Product
 }
 
   relationship OneToMany {
-             Customer{order} to ProductOrder{customer(email)},
-             ProductOrder{orderItem} to OrderItem{order(code)},
-             ProductOrder{invoice} to Invoice{order(code)},
-             Invoice{shipment} to Shipment{invoice(code)},
+             Customer{order} to ProductOrder{customer(email) required},
+             ProductOrder{orderItem} to OrderItem{order(code) required},
+             ProductOrder{invoice} to Invoice{order(code) required},
+             Invoice{shipment} to Shipment{invoice(code) required},
              ProductCategory{product} to Product{productCategory(name)}
 }
 

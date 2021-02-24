@@ -7,6 +7,7 @@ import { TranslateModule, TranslateService, LangChangeEvent } from '@ngx-transla
 import { MainComponent } from 'app/layouts/main/main.component';
 import { StoreTestModule } from '../../../test.module';
 import { MockRouter } from '../../../helpers/mock-route.service';
+import { FindLanguageFromKeyPipe } from 'app/shared/language/find-language-from-key.pipe';
 
 describe('Component Tests', () => {
   describe('MainComponent', () => {
@@ -21,7 +22,7 @@ describe('Component Tests', () => {
       TestBed.configureTestingModule({
         imports: [StoreTestModule, TranslateModule.forRoot()],
         declarations: [MainComponent],
-        providers: [Title],
+        providers: [Title, FindLanguageFromKeyPipe],
       })
         .overrideTemplate(MainComponent, '')
         .compileComponents();

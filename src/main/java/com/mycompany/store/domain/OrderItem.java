@@ -1,16 +1,13 @@
 package com.mycompany.store.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
+import com.mycompany.store.domain.enumeration.OrderItemStatus;
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import com.mycompany.store.domain.enumeration.OrderItemStatus;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A OrderItem.
@@ -19,7 +16,6 @@ import com.mycompany.store.domain.enumeration.OrderItemStatus;
 @Table(name = "order_item")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class OrderItem implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -41,11 +37,13 @@ public class OrderItem implements Serializable {
     @Column(name = "status", nullable = false)
     private OrderItemStatus status;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties(value = "orderItems", allowSetters = true)
     private Product product;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties(value = "orderItems", allowSetters = true)
     private ProductOrder order;
 
@@ -122,6 +120,7 @@ public class OrderItem implements Serializable {
     public void setOrder(ProductOrder productOrder) {
         this.order = productOrder;
     }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override

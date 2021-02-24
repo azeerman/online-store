@@ -8,6 +8,7 @@ export interface IInvoice {
   id?: number;
   date?: Moment;
   details?: string;
+  code?: string;
   status?: InvoiceStatus;
   paymentMethod?: PaymentMethod;
   paymentDate?: Moment;
@@ -21,6 +22,7 @@ export class Invoice implements IInvoice {
     public id?: number,
     public date?: Moment,
     public details?: string,
+    public code?: string,
     public status?: InvoiceStatus,
     public paymentMethod?: PaymentMethod,
     public paymentDate?: Moment,

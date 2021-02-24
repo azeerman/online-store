@@ -1,21 +1,17 @@
 package com.mycompany.store.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
+import com.mycompany.store.domain.enumeration.InvoiceStatus;
+import com.mycompany.store.domain.enumeration.PaymentMethod;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.mycompany.store.domain.enumeration.InvoiceStatus;
-
-import com.mycompany.store.domain.enumeration.PaymentMethod;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A Invoice.
@@ -24,7 +20,6 @@ import com.mycompany.store.domain.enumeration.PaymentMethod;
 @Table(name = "invoice")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Invoice implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -37,6 +32,10 @@ public class Invoice implements Serializable {
 
     @Column(name = "details")
     private String details;
+
+    @NotNull
+    @Column(name = "code", nullable = false)
+    private String code;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -60,7 +59,8 @@ public class Invoice implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Shipment> shipments = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties(value = "invoices", allowSetters = true)
     private ProductOrder order;
 
@@ -97,6 +97,19 @@ public class Invoice implements Serializable {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public Invoice code(String code) {
+        this.code = code;
+        return this;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public InvoiceStatus getStatus() {
@@ -188,6 +201,7 @@ public class Invoice implements Serializable {
     public void setOrder(ProductOrder productOrder) {
         this.order = productOrder;
     }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -213,6 +227,7 @@ public class Invoice implements Serializable {
             "id=" + getId() +
             ", date='" + getDate() + "'" +
             ", details='" + getDetails() + "'" +
+            ", code='" + getCode() + "'" +
             ", status='" + getStatus() + "'" +
             ", paymentMethod='" + getPaymentMethod() + "'" +
             ", paymentDate='" + getPaymentDate() + "'" +

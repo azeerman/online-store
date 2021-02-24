@@ -1,14 +1,12 @@
 package com.mycompany.store.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
 import java.io.Serializable;
 import java.time.Instant;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A Shipment.
@@ -17,7 +15,6 @@ import java.time.Instant;
 @Table(name = "shipment")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Shipment implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -34,7 +31,8 @@ public class Shipment implements Serializable {
     @Column(name = "details")
     private String details;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties(value = "shipments", allowSetters = true)
     private Invoice invoice;
 
@@ -98,6 +96,7 @@ public class Shipment implements Serializable {
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
     }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override

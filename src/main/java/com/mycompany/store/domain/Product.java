@@ -1,17 +1,14 @@
 package com.mycompany.store.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mycompany.store.domain.enumeration.Size;
 import io.swagger.annotations.ApiModel;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import com.mycompany.store.domain.enumeration.Size;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Product sold by the Online store
@@ -21,7 +18,6 @@ import com.mycompany.store.domain.enumeration.Size;
 @Table(name = "product")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Product implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -155,6 +151,7 @@ public class Product implements Serializable {
     public void setProductCategory(ProductCategory productCategory) {
         this.productCategory = productCategory;
     }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
