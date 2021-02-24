@@ -31,6 +31,7 @@ export class InvoiceUpdatePage {
 
   dateInput = element(by.id('field_date'));
   detailsInput = element(by.id('field_details'));
+  codeInput = element(by.id('field_code'));
   statusSelect = element(by.id('field_status'));
   paymentMethodSelect = element(by.id('field_paymentMethod'));
   paymentDateInput = element(by.id('field_paymentDate'));
@@ -56,6 +57,14 @@ export class InvoiceUpdatePage {
 
   async getDetailsInput(): Promise<string> {
     return await this.detailsInput.getAttribute('value');
+  }
+
+  async setCodeInput(code: string): Promise<void> {
+    await this.codeInput.sendKeys(code);
+  }
+
+  async getCodeInput(): Promise<string> {
+    return await this.codeInput.getAttribute('value');
   }
 
   async setStatusSelect(status: string): Promise<void> {

@@ -39,6 +39,10 @@ public class Invoice implements Serializable {
     private String details;
 
     @NotNull
+    @Column(name = "code", nullable = false)
+    private String code;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private InvoiceStatus status;
@@ -60,7 +64,8 @@ public class Invoice implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Shipment> shipments = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties(value = "invoices", allowSetters = true)
     private ProductOrder order;
 
@@ -97,6 +102,19 @@ public class Invoice implements Serializable {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public Invoice code(String code) {
+        this.code = code;
+        return this;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public InvoiceStatus getStatus() {
@@ -213,6 +231,7 @@ public class Invoice implements Serializable {
             "id=" + getId() +
             ", date='" + getDate() + "'" +
             ", details='" + getDetails() + "'" +
+            ", code='" + getCode() + "'" +
             ", status='" + getStatus() + "'" +
             ", paymentMethod='" + getPaymentMethod() + "'" +
             ", paymentDate='" + getPaymentDate() + "'" +
