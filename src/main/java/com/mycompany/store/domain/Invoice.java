@@ -1,21 +1,17 @@
 package com.mycompany.store.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
+import com.mycompany.store.domain.enumeration.InvoiceStatus;
+import com.mycompany.store.domain.enumeration.PaymentMethod;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.mycompany.store.domain.enumeration.InvoiceStatus;
-
-import com.mycompany.store.domain.enumeration.PaymentMethod;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A Invoice.
@@ -24,7 +20,6 @@ import com.mycompany.store.domain.enumeration.PaymentMethod;
 @Table(name = "invoice")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Invoice implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -206,6 +201,7 @@ public class Invoice implements Serializable {
     public void setOrder(ProductOrder productOrder) {
         this.order = productOrder;
     }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override

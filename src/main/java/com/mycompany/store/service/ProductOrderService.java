@@ -2,15 +2,13 @@ package com.mycompany.store.service;
 
 import com.mycompany.store.domain.ProductOrder;
 import com.mycompany.store.repository.ProductOrderRepository;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 /**
  * Service Implementation for managing {@link ProductOrder}.
@@ -18,7 +16,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class ProductOrderService {
-
     private final Logger log = LoggerFactory.getLogger(ProductOrderService.class);
 
     private final ProductOrderRepository productOrderRepository;
@@ -49,7 +46,6 @@ public class ProductOrderService {
         log.debug("Request to get all ProductOrders");
         return productOrderRepository.findAll(pageable);
     }
-
 
     /**
      * Get one productOrder by id.

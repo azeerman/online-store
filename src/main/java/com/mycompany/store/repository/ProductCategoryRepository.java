@@ -1,7 +1,6 @@
 package com.mycompany.store.repository;
 
 import com.mycompany.store.domain.ProductCategory;
-
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +9,4 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Long> {
-}
+public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Long> {}

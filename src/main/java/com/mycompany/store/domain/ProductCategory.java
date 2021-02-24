@@ -1,14 +1,12 @@
 package com.mycompany.store.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A ProductCategory.
@@ -17,7 +15,6 @@ import java.util.Set;
 @Table(name = "product_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ProductCategory implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -94,6 +91,7 @@ public class ProductCategory implements Serializable {
     public void setProducts(Set<Product> products) {
         this.products = products;
     }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override

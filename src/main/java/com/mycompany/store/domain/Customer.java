@@ -1,16 +1,13 @@
 package com.mycompany.store.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
+import com.mycompany.store.domain.enumeration.Gender;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.mycompany.store.domain.enumeration.Gender;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A Customer.
@@ -19,7 +16,6 @@ import com.mycompany.store.domain.enumeration.Gender;
 @Table(name = "customer")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Customer implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -235,6 +231,7 @@ public class Customer implements Serializable {
     public void setOrders(Set<ProductOrder> productOrders) {
         this.orders = productOrders;
     }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override

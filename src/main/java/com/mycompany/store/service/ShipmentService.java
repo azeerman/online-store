@@ -2,15 +2,13 @@ package com.mycompany.store.service;
 
 import com.mycompany.store.domain.Shipment;
 import com.mycompany.store.repository.ShipmentRepository;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 /**
  * Service Implementation for managing {@link Shipment}.
@@ -18,7 +16,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class ShipmentService {
-
     private final Logger log = LoggerFactory.getLogger(ShipmentService.class);
 
     private final ShipmentRepository shipmentRepository;
@@ -49,7 +46,6 @@ public class ShipmentService {
         log.debug("Request to get all Shipments");
         return shipmentRepository.findAll(pageable);
     }
-
 
     /**
      * Get one shipment by id.
