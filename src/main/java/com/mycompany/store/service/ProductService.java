@@ -2,13 +2,15 @@ package com.mycompany.store.service;
 
 import com.mycompany.store.domain.Product;
 import com.mycompany.store.repository.ProductRepository;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 /**
  * Service Implementation for managing {@link Product}.
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ProductService {
+
     private final Logger log = LoggerFactory.getLogger(ProductService.class);
 
     private final ProductRepository productRepository;
@@ -46,6 +49,7 @@ public class ProductService {
         log.debug("Request to get all Products");
         return productRepository.findAll(pageable);
     }
+
 
     /**
      * Get one product by id.

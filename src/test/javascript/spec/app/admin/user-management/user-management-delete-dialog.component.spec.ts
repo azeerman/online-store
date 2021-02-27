@@ -4,8 +4,6 @@ import { of } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { StoreTestModule } from '../../../test.module';
-import { MockEventManager } from '../../../helpers/mock-event-manager.service';
-import { MockActiveModal } from '../../../helpers/mock-active-modal.service';
 import { UserManagementDeleteDialogComponent } from 'app/admin/user-management/user-management-delete-dialog.component';
 import { UserService } from 'app/core/user/user.service';
 
@@ -14,13 +12,13 @@ describe('Component Tests', () => {
     let comp: UserManagementDeleteDialogComponent;
     let fixture: ComponentFixture<UserManagementDeleteDialogComponent>;
     let service: UserService;
-    let mockEventManager: MockEventManager;
-    let mockActiveModal: MockActiveModal;
+    let mockEventManager: any;
+    let mockActiveModal: any;
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         imports: [StoreTestModule],
-        declarations: [UserManagementDeleteDialogComponent],
+        declarations: [UserManagementDeleteDialogComponent]
       })
         .overrideTemplate(UserManagementDeleteDialogComponent, '')
         .compileComponents();
@@ -30,8 +28,8 @@ describe('Component Tests', () => {
       fixture = TestBed.createComponent(UserManagementDeleteDialogComponent);
       comp = fixture.componentInstance;
       service = fixture.debugElement.injector.get(UserService);
-      mockEventManager = TestBed.get(JhiEventManager);
-      mockActiveModal = TestBed.get(NgbActiveModal);
+      mockEventManager = fixture.debugElement.injector.get(JhiEventManager);
+      mockActiveModal = fixture.debugElement.injector.get(NgbActiveModal);
     });
 
     describe('confirmDelete', () => {

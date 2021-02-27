@@ -1,14 +1,16 @@
 package com.mycompany.store.domain;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mycompany.store.domain.enumeration.Size;
 import io.swagger.annotations.ApiModel;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import com.mycompany.store.domain.enumeration.Size;
 
 /**
  * Product sold by the Online store
@@ -16,8 +18,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @ApiModel(description = "Product sold by the Online store")
 @Entity
 @Table(name = "product")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Product implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -49,10 +52,10 @@ public class Product implements Serializable {
     private String imageContentType;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = "products", allowSetters = true)
+    @JsonIgnoreProperties("products")
     private ProductCategory productCategory;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -151,8 +154,7 @@ public class Product implements Serializable {
     public void setProductCategory(ProductCategory productCategory) {
         this.productCategory = productCategory;
     }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -170,7 +172,6 @@ public class Product implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "Product{" +

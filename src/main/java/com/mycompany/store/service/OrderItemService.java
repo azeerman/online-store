@@ -2,13 +2,18 @@ package com.mycompany.store.service;
 
 import com.mycompany.store.domain.OrderItem;
 import com.mycompany.store.repository.OrderItemRepository;
-import java.util.Optional;
+import com.mycompany.store.security.AuthoritiesConstants;
+import com.mycompany.store.security.SecurityUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 /**
  * Service Implementation for managing {@link OrderItem}.
@@ -16,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class OrderItemService {
+
     private final Logger log = LoggerFactory.getLogger(OrderItemService.class);
 
     private final OrderItemRepository orderItemRepository;
@@ -44,8 +50,15 @@ public class OrderItemService {
     @Transactional(readOnly = true)
     public Page<OrderItem> findAll(Pageable pageable) {
         log.debug("Request to get all OrderItems");
-        return orderItemRepository.findAll(pageable);
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+            return orderItemRepository.findAll(pageable);
+        } else
+            return orderItemRepository.findAllByOrderCustomerUserLogin(
+                SecurityUtils.getCurrentUserLogin().get(),
+                pageable
+            );
     }
+
 
     /**
      * Get one orderItem by id.
@@ -56,7 +69,13 @@ public class OrderItemService {
     @Transactional(readOnly = true)
     public Optional<OrderItem> findOne(Long id) {
         log.debug("Request to get OrderItem : {}", id);
-        return orderItemRepository.findById(id);
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+            return orderItemRepository.findById(id);
+        } else
+            return orderItemRepository.findOneByIdAndOrderCustomerUserLogin(
+                id,
+                SecurityUtils.getCurrentUserLogin().get()
+            );
     }
 
     /**

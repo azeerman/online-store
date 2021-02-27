@@ -1,33 +1,28 @@
 import { Component, OnDestroy } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { JhiEventManager, JhiAlert, JhiAlertService, JhiEventWithContent } from 'ng-jhipster';
+import { JhiEventManager, JhiAlert, JhiAlertService } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
-
-import { AlertError } from './alert-error.model';
 
 @Component({
   selector: 'jhi-alert-error',
-  template: ` <div class="alerts" role="alert">
-    <div *ngFor="let alert of alerts" [ngClass]="setClasses(alert)">
-      <ngb-alert *ngIf="alert && alert.type && alert.msg" [type]="alert.type" (close)="close(alert)">
-        <pre [innerHTML]="alert.msg"></pre>
-      </ngb-alert>
+  template: `
+    <div class="alerts" role="alert">
+      <div *ngFor="let alert of alerts" [ngClass]="setClasses(alert)">
+        <ngb-alert *ngIf="alert && alert.type && alert.msg" [type]="alert.type" (close)="alert.close(alerts)">
+          <pre [innerHTML]="alert.msg"></pre>
+        </ngb-alert>
+      </div>
     </div>
-  </div>`,
+  `
 })
-export class AlertErrorComponent implements OnDestroy {
-  alerts: JhiAlert[] = [];
-  errorListener: Subscription;
-  httpErrorListener: Subscription;
-
+export class JhiAlertErrorComponent implements OnDestroy {
+  alerts: any[];
+  cleanHttpErrorListener: Subscription;
   constructor(private alertService: JhiAlertService, private eventManager: JhiEventManager, translateService: TranslateService) {
-    this.errorListener = eventManager.subscribe('storeApp.error', (response: JhiEventWithContent<AlertError>) => {
-      const errorResponse = response.content;
-      this.addErrorAlert(errorResponse.message, errorResponse.key, errorResponse.params);
-    });
+    this.alerts = [];
 
-    this.httpErrorListener = eventManager.subscribe('storeApp.httpError', (response: JhiEventWithContent<HttpErrorResponse>) => {
+    this.cleanHttpErrorListener = eventManager.subscribe('storeApp.httpError', response => {
+      let i;
       const httpErrorResponse = response.content;
       switch (httpErrorResponse.status) {
         // connection refused, server not reachable
@@ -51,7 +46,8 @@ export class AlertErrorComponent implements OnDestroy {
             this.addErrorAlert(errorHeader, errorHeader, { entityName });
           } else if (httpErrorResponse.error !== '' && httpErrorResponse.error.fieldErrors) {
             const fieldErrors = httpErrorResponse.error.fieldErrors;
-            for (const fieldError of fieldErrors) {
+            for (i = 0; i < fieldErrors.length; i++) {
+              const fieldError = fieldErrors[i];
               if (['Min', 'Max', 'DecimalMin', 'DecimalMax'].includes(fieldError.message)) {
                 fieldError.message = 'Size';
               }
@@ -67,7 +63,6 @@ export class AlertErrorComponent implements OnDestroy {
           }
           break;
         }
-
         case 404:
           this.addErrorAlert('Not found', 'error.url.not.found');
           break;
@@ -82,24 +77,21 @@ export class AlertErrorComponent implements OnDestroy {
     });
   }
 
-  setClasses(alert: JhiAlert): { [key: string]: boolean } {
-    const classes = { 'jhi-toast': Boolean(alert.toast) };
-    if (alert.position) {
-      return { ...classes, [alert.position]: true };
-    }
-    return classes;
+  setClasses(alert) {
+    return {
+      'jhi-toast': alert.toast,
+      [alert.position]: true
+    };
   }
 
-  ngOnDestroy(): void {
-    if (this.errorListener) {
-      this.eventManager.destroy(this.errorListener);
-    }
-    if (this.httpErrorListener) {
-      this.eventManager.destroy(this.httpErrorListener);
+  ngOnDestroy() {
+    if (this.cleanHttpErrorListener !== undefined && this.cleanHttpErrorListener !== null) {
+      this.eventManager.destroy(this.cleanHttpErrorListener);
+      this.alerts = [];
     }
   }
 
-  addErrorAlert(message: string, key?: string, data?: any): void {
+  addErrorAlert(message, key?, data?) {
     message = key && key !== null ? key : message;
 
     const newAlert: JhiAlert = {
@@ -108,14 +100,9 @@ export class AlertErrorComponent implements OnDestroy {
       params: data,
       timeout: 5000,
       toast: this.alertService.isToast(),
-      scoped: true,
+      scoped: true
     };
 
     this.alerts.push(this.alertService.addAlert(newAlert, this.alerts));
-  }
-
-  close(alert: JhiAlert): void {
-    // NOSONAR can be removed after https://github.com/SonarSource/SonarJS/issues/1930 is resolved
-    alert.close?.(this.alerts); // NOSONAR
   }
 }

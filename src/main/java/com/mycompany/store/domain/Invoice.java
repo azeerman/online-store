@@ -1,25 +1,29 @@
 package com.mycompany.store.domain;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mycompany.store.domain.enumeration.InvoiceStatus;
-import com.mycompany.store.domain.enumeration.PaymentMethod;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.mycompany.store.domain.enumeration.InvoiceStatus;
+
+import com.mycompany.store.domain.enumeration.PaymentMethod;
 
 /**
  * A Invoice.
  */
 @Entity
 @Table(name = "invoice")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Invoice implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -27,15 +31,15 @@ public class Invoice implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(name = "code", nullable = false)
+    private String code;
+
+    @NotNull
     @Column(name = "date", nullable = false)
     private Instant date;
 
     @Column(name = "details")
     private String details;
-
-    @NotNull
-    @Column(name = "code", nullable = false)
-    private String code;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -56,21 +60,34 @@ public class Invoice implements Serializable {
     private BigDecimal paymentAmount;
 
     @OneToMany(mappedBy = "invoice")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Shipment> shipments = new HashSet<>();
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = "invoices", allowSetters = true)
+    @JsonIgnoreProperties("invoices")
     private ProductOrder order;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public Invoice code(String code) {
+        this.code = code;
+        return this;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Instant getDate() {
@@ -97,19 +114,6 @@ public class Invoice implements Serializable {
 
     public void setDetails(String details) {
         this.details = details;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public Invoice code(String code) {
-        this.code = code;
-        return this;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public InvoiceStatus getStatus() {
@@ -201,8 +205,7 @@ public class Invoice implements Serializable {
     public void setOrder(ProductOrder productOrder) {
         this.order = productOrder;
     }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -220,14 +223,13 @@ public class Invoice implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "Invoice{" +
             "id=" + getId() +
+            ", code='" + getCode() + "'" +
             ", date='" + getDate() + "'" +
             ", details='" + getDetails() + "'" +
-            ", code='" + getCode() + "'" +
             ", status='" + getStatus() + "'" +
             ", paymentMethod='" + getPaymentMethod() + "'" +
             ", paymentDate='" + getPaymentDate() + "'" +

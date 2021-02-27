@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import * as moment from 'moment';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared/util/request-util';
@@ -44,22 +46,22 @@ export class InvoiceService {
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
-    return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  delete(id: number): Observable<HttpResponse<any>> {
+    return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
   protected convertDateFromClient(invoice: IInvoice): IInvoice {
     const copy: IInvoice = Object.assign({}, invoice, {
-      date: invoice.date && invoice.date.isValid() ? invoice.date.toJSON() : undefined,
-      paymentDate: invoice.paymentDate && invoice.paymentDate.isValid() ? invoice.paymentDate.toJSON() : undefined,
+      date: invoice.date != null && invoice.date.isValid() ? invoice.date.toJSON() : null,
+      paymentDate: invoice.paymentDate != null && invoice.paymentDate.isValid() ? invoice.paymentDate.toJSON() : null
     });
     return copy;
   }
 
   protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
     if (res.body) {
-      res.body.date = res.body.date ? moment(res.body.date) : undefined;
-      res.body.paymentDate = res.body.paymentDate ? moment(res.body.paymentDate) : undefined;
+      res.body.date = res.body.date != null ? moment(res.body.date) : null;
+      res.body.paymentDate = res.body.paymentDate != null ? moment(res.body.paymentDate) : null;
     }
     return res;
   }
@@ -67,8 +69,8 @@ export class InvoiceService {
   protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
     if (res.body) {
       res.body.forEach((invoice: IInvoice) => {
-        invoice.date = invoice.date ? moment(invoice.date) : undefined;
-        invoice.paymentDate = invoice.paymentDate ? moment(invoice.paymentDate) : undefined;
+        invoice.date = invoice.date != null ? moment(invoice.date) : null;
+        invoice.paymentDate = invoice.paymentDate != null ? moment(invoice.paymentDate) : null;
       });
     }
     return res;

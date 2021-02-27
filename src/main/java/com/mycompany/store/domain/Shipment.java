@@ -1,20 +1,22 @@
 package com.mycompany.store.domain;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.io.Serializable;
-import java.time.Instant;
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
+import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * A Shipment.
  */
 @Entity
 @Table(name = "shipment")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Shipment implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -33,10 +35,10 @@ public class Shipment implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = "shipments", allowSetters = true)
+    @JsonIgnoreProperties("shipments")
     private Invoice invoice;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -96,8 +98,7 @@ public class Shipment implements Serializable {
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
     }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -115,7 +116,6 @@ public class Shipment implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "Shipment{" +

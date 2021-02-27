@@ -2,16 +2,18 @@ package com.mycompany.store.service;
 
 import com.mycompany.store.domain.ProductOrder;
 import com.mycompany.store.repository.ProductOrderRepository;
-import java.util.Optional;
-
 import com.mycompany.store.security.AuthoritiesConstants;
 import com.mycompany.store.security.SecurityUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 /**
  * Service Implementation for managing {@link ProductOrder}.
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ProductOrderService {
+
     private final Logger log = LoggerFactory.getLogger(ProductOrderService.class);
 
     private final ProductOrderRepository productOrderRepository;
@@ -47,13 +50,15 @@ public class ProductOrderService {
     @Transactional(readOnly = true)
     public Page<ProductOrder> findAll(Pageable pageable) {
         log.debug("Request to get all ProductOrders");
-        if (SecurityUtils.isCurrentUserInRole (AuthoritiesConstants.ADMIN)) {
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
             return productOrderRepository.findAll(pageable);
         } else
-         return productOrderRepository.findAllByCustomerUserLogin(
-                    SecurityUtils.getCurrentUserLogin().get(),  pageable
-         );
+            return productOrderRepository.findAllByCustomerUserLogin(
+                SecurityUtils.getCurrentUserLogin().get(),
+                pageable
+            );
     }
+
 
     /**
      * Get one productOrder by id.
@@ -64,7 +69,13 @@ public class ProductOrderService {
     @Transactional(readOnly = true)
     public Optional<ProductOrder> findOne(Long id) {
         log.debug("Request to get ProductOrder : {}", id);
-        return productOrderRepository.findById(id);
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+            return productOrderRepository.findById(id);
+        } else
+            return productOrderRepository.findOneByIdAndCustomerUserLogin(
+                id,
+                SecurityUtils.getCurrentUserLogin().get()
+            );
     }
 
     /**

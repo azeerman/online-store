@@ -17,6 +17,7 @@ describe('Component Tests', () => {
       TestBed.configureTestingModule({
         imports: [StoreTestModule],
         declarations: [ProductCategoryComponent],
+        providers: []
       })
         .overrideTemplate(ProductCategoryComponent, '')
         .compileComponents();
@@ -33,7 +34,7 @@ describe('Component Tests', () => {
         of(
           new HttpResponse({
             body: [new ProductCategory(123)],
-            headers,
+            headers
           })
         )
       );
@@ -43,7 +44,7 @@ describe('Component Tests', () => {
 
       // THEN
       expect(service.query).toHaveBeenCalled();
-      expect(comp.productCategories && comp.productCategories[0]).toEqual(jasmine.objectContaining({ id: 123 }));
+      expect(comp.productCategories[0]).toEqual(jasmine.objectContaining({ id: 123 }));
     });
   });
 });

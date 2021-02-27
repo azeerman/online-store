@@ -4,22 +4,20 @@ export class ProductOrderComponentsPage {
   createButton = element(by.id('jh-create-entity'));
   deleteButtons = element.all(by.css('jhi-product-order div table .btn-danger'));
   title = element.all(by.css('jhi-product-order div h2#page-heading span')).first();
-  noResult = element(by.id('no-result'));
-  entities = element(by.id('entities'));
 
-  async clickOnCreateButton(): Promise<void> {
+  async clickOnCreateButton() {
     await this.createButton.click();
   }
 
-  async clickOnLastDeleteButton(): Promise<void> {
+  async clickOnLastDeleteButton() {
     await this.deleteButtons.last().click();
   }
 
-  async countDeleteButtons(): Promise<number> {
+  async countDeleteButtons() {
     return this.deleteButtons.count();
   }
 
-  async getTitle(): Promise<string> {
+  async getTitle() {
     return this.title.getAttribute('jhiTranslate');
   }
 }
@@ -28,50 +26,54 @@ export class ProductOrderUpdatePage {
   pageTitle = element(by.id('jhi-product-order-heading'));
   saveButton = element(by.id('save-entity'));
   cancelButton = element(by.id('cancel-save'));
-
   placedDateInput = element(by.id('field_placedDate'));
   statusSelect = element(by.id('field_status'));
   codeInput = element(by.id('field_code'));
-
   customerSelect = element(by.id('field_customer'));
 
-  async getPageTitle(): Promise<string> {
+  async getPageTitle() {
     return this.pageTitle.getAttribute('jhiTranslate');
   }
 
-  async setPlacedDateInput(placedDate: string): Promise<void> {
+  async setPlacedDateInput(placedDate) {
     await this.placedDateInput.sendKeys(placedDate);
   }
 
-  async getPlacedDateInput(): Promise<string> {
+  async getPlacedDateInput() {
     return await this.placedDateInput.getAttribute('value');
   }
 
-  async setStatusSelect(status: string): Promise<void> {
+  async setStatusSelect(status) {
     await this.statusSelect.sendKeys(status);
   }
 
-  async getStatusSelect(): Promise<string> {
+  async getStatusSelect() {
     return await this.statusSelect.element(by.css('option:checked')).getText();
   }
 
-  async statusSelectLastOption(): Promise<void> {
-    await this.statusSelect.all(by.tagName('option')).last().click();
+  async statusSelectLastOption() {
+    await this.statusSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
   }
 
-  async setCodeInput(code: string): Promise<void> {
+  async setCodeInput(code) {
     await this.codeInput.sendKeys(code);
   }
 
-  async getCodeInput(): Promise<string> {
+  async getCodeInput() {
     return await this.codeInput.getAttribute('value');
   }
 
-  async customerSelectLastOption(): Promise<void> {
-    await this.customerSelect.all(by.tagName('option')).last().click();
+  async customerSelectLastOption() {
+    await this.customerSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
   }
 
-  async customerSelectOption(option: string): Promise<void> {
+  async customerSelectOption(option) {
     await this.customerSelect.sendKeys(option);
   }
 
@@ -79,15 +81,15 @@ export class ProductOrderUpdatePage {
     return this.customerSelect;
   }
 
-  async getCustomerSelectedOption(): Promise<string> {
+  async getCustomerSelectedOption() {
     return await this.customerSelect.element(by.css('option:checked')).getText();
   }
 
-  async save(): Promise<void> {
+  async save() {
     await this.saveButton.click();
   }
 
-  async cancel(): Promise<void> {
+  async cancel() {
     await this.cancelButton.click();
   }
 
@@ -100,11 +102,11 @@ export class ProductOrderDeleteDialog {
   private dialogTitle = element(by.id('jhi-delete-productOrder-heading'));
   private confirmButton = element(by.id('jhi-confirm-delete-productOrder'));
 
-  async getDialogTitle(): Promise<string> {
+  async getDialogTitle() {
     return this.dialogTitle.getAttribute('jhiTranslate');
   }
 
-  async clickOnConfirmButton(): Promise<void> {
+  async clickOnConfirmButton() {
     await this.confirmButton.click();
   }
 }

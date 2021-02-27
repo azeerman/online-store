@@ -5,18 +5,20 @@ import { IProductOrder } from 'app/shared/model/product-order.model';
 
 @Component({
   selector: 'jhi-product-order-detail',
-  templateUrl: './product-order-detail.component.html',
+  templateUrl: './product-order-detail.component.html'
 })
 export class ProductOrderDetailComponent implements OnInit {
-  productOrder: IProductOrder | null = null;
+  productOrder: IProductOrder;
 
   constructor(protected activatedRoute: ActivatedRoute) {}
 
-  ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ productOrder }) => (this.productOrder = productOrder));
+  ngOnInit() {
+    this.activatedRoute.data.subscribe(({ productOrder }) => {
+      this.productOrder = productOrder;
+    });
   }
 
-  previousState(): void {
+  previousState() {
     window.history.back();
   }
 }

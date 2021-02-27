@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { StoreSharedModule } from 'app/shared/shared.module';
 
-import { MetricsComponent } from './metrics.component';
+import { JhiMetricsMonitoringComponent } from './metrics.component';
 
 import { metricsRoute } from './metrics.route';
 
 @NgModule({
   imports: [StoreSharedModule, RouterModule.forChild([metricsRoute])],
-  declarations: [MetricsComponent],
+  declarations: [JhiMetricsMonitoringComponent]
 })
 export class MetricsModule {}

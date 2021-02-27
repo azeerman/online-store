@@ -1,5 +1,6 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { take, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 import { ProductOrderService } from 'app/entities/product-order/product-order.service';
@@ -12,14 +13,13 @@ describe('Service Tests', () => {
     let service: ProductOrderService;
     let httpMock: HttpTestingController;
     let elemDefault: IProductOrder;
-    let expectedResult: IProductOrder | IProductOrder[] | boolean | null;
+    let expectedResult;
     let currentDate: moment.Moment;
-
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+        imports: [HttpClientTestingModule]
       });
-      expectedResult = null;
+      expectedResult = {};
       injector = getTestBed();
       service = injector.get(ProductOrderService);
       httpMock = injector.get(HttpTestingController);
@@ -32,39 +32,41 @@ describe('Service Tests', () => {
       it('should find an element', () => {
         const returnedFromService = Object.assign(
           {
-            placedDate: currentDate.format(DATE_TIME_FORMAT),
+            placedDate: currentDate.format(DATE_TIME_FORMAT)
           },
           elemDefault
         );
-
-        service.find(123).subscribe(resp => (expectedResult = resp.body));
+        service
+          .find(123)
+          .pipe(take(1))
+          .subscribe(resp => (expectedResult = resp));
 
         const req = httpMock.expectOne({ method: 'GET' });
         req.flush(returnedFromService);
-        expect(expectedResult).toMatchObject(elemDefault);
+        expect(expectedResult).toMatchObject({ body: elemDefault });
       });
 
       it('should create a ProductOrder', () => {
         const returnedFromService = Object.assign(
           {
             id: 0,
-            placedDate: currentDate.format(DATE_TIME_FORMAT),
+            placedDate: currentDate.format(DATE_TIME_FORMAT)
           },
           elemDefault
         );
-
         const expected = Object.assign(
           {
-            placedDate: currentDate,
+            placedDate: currentDate
           },
           returnedFromService
         );
-
-        service.create(new ProductOrder()).subscribe(resp => (expectedResult = resp.body));
-
+        service
+          .create(new ProductOrder(null))
+          .pipe(take(1))
+          .subscribe(resp => (expectedResult = resp));
         const req = httpMock.expectOne({ method: 'POST' });
         req.flush(returnedFromService);
-        expect(expectedResult).toMatchObject(expected);
+        expect(expectedResult).toMatchObject({ body: expected });
       });
 
       it('should update a ProductOrder', () => {
@@ -72,23 +74,24 @@ describe('Service Tests', () => {
           {
             placedDate: currentDate.format(DATE_TIME_FORMAT),
             status: 'BBBBBB',
-            code: 'BBBBBB',
+            code: 'BBBBBB'
           },
           elemDefault
         );
 
         const expected = Object.assign(
           {
-            placedDate: currentDate,
+            placedDate: currentDate
           },
           returnedFromService
         );
-
-        service.update(expected).subscribe(resp => (expectedResult = resp.body));
-
+        service
+          .update(expected)
+          .pipe(take(1))
+          .subscribe(resp => (expectedResult = resp));
         const req = httpMock.expectOne({ method: 'PUT' });
         req.flush(returnedFromService);
-        expect(expectedResult).toMatchObject(expected);
+        expect(expectedResult).toMatchObject({ body: expected });
       });
 
       it('should return a list of ProductOrder', () => {
@@ -96,20 +99,23 @@ describe('Service Tests', () => {
           {
             placedDate: currentDate.format(DATE_TIME_FORMAT),
             status: 'BBBBBB',
-            code: 'BBBBBB',
+            code: 'BBBBBB'
           },
           elemDefault
         );
-
         const expected = Object.assign(
           {
-            placedDate: currentDate,
+            placedDate: currentDate
           },
           returnedFromService
         );
-
-        service.query().subscribe(resp => (expectedResult = resp.body));
-
+        service
+          .query(expected)
+          .pipe(
+            take(1),
+            map(resp => resp.body)
+          )
+          .subscribe(body => (expectedResult = body));
         const req = httpMock.expectOne({ method: 'GET' });
         req.flush([returnedFromService]);
         httpMock.verify();

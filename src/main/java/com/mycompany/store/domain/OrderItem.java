@@ -1,21 +1,24 @@
 package com.mycompany.store.domain;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mycompany.store.domain.enumeration.OrderItemStatus;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import com.mycompany.store.domain.enumeration.OrderItemStatus;
 
 /**
  * A OrderItem.
  */
 @Entity
 @Table(name = "order_item")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class OrderItem implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -39,15 +42,15 @@ public class OrderItem implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = "orderItems", allowSetters = true)
+    @JsonIgnoreProperties("orderItems")
     private Product product;
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = "orderItems", allowSetters = true)
+    @JsonIgnoreProperties("orderItems")
     private ProductOrder order;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -120,8 +123,7 @@ public class OrderItem implements Serializable {
     public void setOrder(ProductOrder productOrder) {
         this.order = productOrder;
     }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -139,7 +141,6 @@ public class OrderItem implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "OrderItem{" +

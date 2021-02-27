@@ -1,24 +1,24 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { JhiDataUtils, JhiFileLoadError, JhiEventManager, JhiEventWithContent } from 'ng-jhipster';
-
+import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 import { IProduct, Product } from 'app/shared/model/product.model';
 import { ProductService } from './product.service';
-import { AlertError } from 'app/shared/alert/alert-error.model';
 import { IProductCategory } from 'app/shared/model/product-category.model';
 import { ProductCategoryService } from 'app/entities/product-category/product-category.service';
 
 @Component({
   selector: 'jhi-product-update',
-  templateUrl: './product-update.component.html',
+  templateUrl: './product-update.component.html'
 })
 export class ProductUpdateComponent implements OnInit {
-  isSaving = false;
-  productcategories: IProductCategory[] = [];
+  isSaving: boolean;
+
+  productcategories: IProductCategory[];
 
   editForm = this.fb.group({
     id: [],
@@ -28,12 +28,12 @@ export class ProductUpdateComponent implements OnInit {
     size: [null, [Validators.required]],
     image: [],
     imageContentType: [],
-    productCategory: [],
+    productCategory: []
   });
 
   constructor(
     protected dataUtils: JhiDataUtils,
-    protected eventManager: JhiEventManager,
+    protected jhiAlertService: JhiAlertService,
     protected productService: ProductService,
     protected productCategoryService: ProductCategoryService,
     protected elementRef: ElementRef,
@@ -41,15 +41,20 @@ export class ProductUpdateComponent implements OnInit {
     private fb: FormBuilder
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.isSaving = false;
     this.activatedRoute.data.subscribe(({ product }) => {
       this.updateForm(product);
-
-      this.productCategoryService.query().subscribe((res: HttpResponse<IProductCategory[]>) => (this.productcategories = res.body || []));
     });
+    this.productCategoryService
+      .query()
+      .subscribe(
+        (res: HttpResponse<IProductCategory[]>) => (this.productcategories = res.body),
+        (res: HttpErrorResponse) => this.onError(res.message)
+      );
   }
 
-  updateForm(product: IProduct): void {
+  updateForm(product: IProduct) {
     this.editForm.patchValue({
       id: product.id,
       name: product.name,
@@ -58,41 +63,58 @@ export class ProductUpdateComponent implements OnInit {
       size: product.size,
       image: product.image,
       imageContentType: product.imageContentType,
-      productCategory: product.productCategory,
+      productCategory: product.productCategory
     });
   }
 
-  byteSize(base64String: string): string {
-    return this.dataUtils.byteSize(base64String);
+  byteSize(field) {
+    return this.dataUtils.byteSize(field);
   }
 
-  openFile(contentType: string, base64String: string): void {
-    this.dataUtils.openFile(contentType, base64String);
+  openFile(contentType, field) {
+    return this.dataUtils.openFile(contentType, field);
   }
 
-  setFileData(event: any, field: string, isImage: boolean): void {
-    this.dataUtils.loadFileToForm(event, this.editForm, field, isImage).subscribe(null, (err: JhiFileLoadError) => {
-      this.eventManager.broadcast(
-        new JhiEventWithContent<AlertError>('storeApp.error', { ...err, key: 'error.file.' + err.key })
-      );
-    });
+  setFileData(event, field: string, isImage) {
+    return new Promise((resolve, reject) => {
+      if (event && event.target && event.target.files && event.target.files[0]) {
+        const file: File = event.target.files[0];
+        if (isImage && !file.type.startsWith('image/')) {
+          reject(`File was expected to be an image but was found to be ${file.type}`);
+        } else {
+          const filedContentType: string = field + 'ContentType';
+          this.dataUtils.toBase64(file, base64Data => {
+            this.editForm.patchValue({
+              [field]: base64Data,
+              [filedContentType]: file.type
+            });
+          });
+        }
+      } else {
+        reject(`Base64 data was not set as file could not be extracted from passed parameter: ${event}`);
+      }
+    }).then(
+      // eslint-disable-next-line no-console
+      () => console.log('blob added'), // success
+      this.onError
+    );
   }
 
-  clearInputImage(field: string, fieldContentType: string, idInput: string): void {
+  clearInputImage(field: string, fieldContentType: string, idInput: string) {
     this.editForm.patchValue({
       [field]: null,
-      [fieldContentType]: null,
+      [fieldContentType]: null
     });
     if (this.elementRef && idInput && this.elementRef.nativeElement.querySelector('#' + idInput)) {
       this.elementRef.nativeElement.querySelector('#' + idInput).value = null;
     }
   }
 
-  previousState(): void {
+  previousState() {
     window.history.back();
   }
 
-  save(): void {
+  save() {
     this.isSaving = true;
     const product = this.createFromForm();
     if (product.id !== undefined) {
@@ -105,34 +127,34 @@ export class ProductUpdateComponent implements OnInit {
   private createFromForm(): IProduct {
     return {
       ...new Product(),
-      id: this.editForm.get(['id'])!.value,
-      name: this.editForm.get(['name'])!.value,
-      description: this.editForm.get(['description'])!.value,
-      price: this.editForm.get(['price'])!.value,
-      size: this.editForm.get(['size'])!.value,
-      imageContentType: this.editForm.get(['imageContentType'])!.value,
-      image: this.editForm.get(['image'])!.value,
-      productCategory: this.editForm.get(['productCategory'])!.value,
+      id: this.editForm.get(['id']).value,
+      name: this.editForm.get(['name']).value,
+      description: this.editForm.get(['description']).value,
+      price: this.editForm.get(['price']).value,
+      size: this.editForm.get(['size']).value,
+      imageContentType: this.editForm.get(['imageContentType']).value,
+      image: this.editForm.get(['image']).value,
+      productCategory: this.editForm.get(['productCategory']).value
     };
   }
 
-  protected subscribeToSaveResponse(result: Observable<HttpResponse<IProduct>>): void {
-    result.subscribe(
-      () => this.onSaveSuccess(),
-      () => this.onSaveError()
-    );
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IProduct>>) {
+    result.subscribe(() => this.onSaveSuccess(), () => this.onSaveError());
   }
 
-  protected onSaveSuccess(): void {
+  protected onSaveSuccess() {
     this.isSaving = false;
     this.previousState();
   }
 
-  protected onSaveError(): void {
+  protected onSaveError() {
     this.isSaving = false;
   }
+  protected onError(errorMessage: string) {
+    this.jhiAlertService.error(errorMessage, null, null);
+  }
 
-  trackById(index: number, item: IProductCategory): any {
+  trackProductCategoryById(index: number, item: IProductCategory) {
     return item.id;
   }
 }

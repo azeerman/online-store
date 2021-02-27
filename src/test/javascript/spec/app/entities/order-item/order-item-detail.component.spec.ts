@@ -16,7 +16,7 @@ describe('Component Tests', () => {
       TestBed.configureTestingModule({
         imports: [StoreTestModule],
         declarations: [OrderItemDetailComponent],
-        providers: [{ provide: ActivatedRoute, useValue: route }],
+        providers: [{ provide: ActivatedRoute, useValue: route }]
       })
         .overrideTemplate(OrderItemDetailComponent, '')
         .compileComponents();
@@ -25,7 +25,9 @@ describe('Component Tests', () => {
     });
 
     describe('OnInit', () => {
-      it('Should load orderItem on init', () => {
+      it('Should call load all on init', () => {
+        // GIVEN
+
         // WHEN
         comp.ngOnInit();
 

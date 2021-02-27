@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
@@ -6,10 +7,10 @@ import { IProductOrder } from 'app/shared/model/product-order.model';
 import { ProductOrderService } from './product-order.service';
 
 @Component({
-  templateUrl: './product-order-delete-dialog.component.html',
+  templateUrl: './product-order-delete-dialog.component.html'
 })
 export class ProductOrderDeleteDialogComponent {
-  productOrder?: IProductOrder;
+  productOrder: IProductOrder;
 
   constructor(
     protected productOrderService: ProductOrderService,
@@ -17,14 +18,17 @@ export class ProductOrderDeleteDialogComponent {
     protected eventManager: JhiEventManager
   ) {}
 
-  cancel(): void {
-    this.activeModal.dismiss();
+  clear() {
+    this.activeModal.dismiss('cancel');
   }
 
-  confirmDelete(id: number): void {
+  confirmDelete(id: number) {
     this.productOrderService.delete(id).subscribe(() => {
-      this.eventManager.broadcast('productOrderListModification');
-      this.activeModal.close();
+      this.eventManager.broadcast({
+        name: 'productOrderListModification',
+        content: 'Deleted an productOrder'
+      });
+      this.activeModal.dismiss(true);
     });
   }
 }

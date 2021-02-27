@@ -1,7 +1,7 @@
 package com.mycompany.store.aop.logging;
 
 import io.github.jhipster.config.JHipsterConstants;
-import java.util.Arrays;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 
+import java.util.Arrays;
+
 /**
  * Aspect for logging execution of service and repository Spring components.
  *
@@ -20,6 +22,9 @@ import org.springframework.core.env.Profiles;
  */
 @Aspect
 public class LoggingAspect {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     private final Environment env;
 
     public LoggingAspect(Environment env) {
@@ -29,11 +34,9 @@ public class LoggingAspect {
     /**
      * Pointcut that matches all repositories, services and Web REST endpoints.
      */
-    @Pointcut(
-        "within(@org.springframework.stereotype.Repository *)" +
+    @Pointcut("within(@org.springframework.stereotype.Repository *)" +
         " || within(@org.springframework.stereotype.Service *)" +
-        " || within(@org.springframework.web.bind.annotation.RestController *)"
-    )
+        " || within(@org.springframework.web.bind.annotation.RestController *)")
     public void springBeanPointcut() {
         // Method is empty as this is just a Pointcut, the implementations are in the advices.
     }
@@ -41,23 +44,11 @@ public class LoggingAspect {
     /**
      * Pointcut that matches all Spring beans in the application's main packages.
      */
-    @Pointcut(
-        "within(com.mycompany.store.repository..*)" +
-        " || within(com.mycompany.store.service..*)" +
-        " || within(com.mycompany.store.web.rest..*)"
-    )
+    @Pointcut("within(com.mycompany.store.repository..*)"+
+        " || within(com.mycompany.store.service..*)"+
+        " || within(com.mycompany.store.web.rest..*)")
     public void applicationPackagePointcut() {
         // Method is empty as this is just a Pointcut, the implementations are in the advices.
-    }
-
-    /**
-     * Retrieves the {@link Logger} associated to the given {@link JoinPoint}.
-     *
-     * @param joinPoint join point we want the logger for.
-     * @return {@link Logger} associated to the given {@link JoinPoint}.
-     */
-    private Logger logger(JoinPoint joinPoint) {
-        return LoggerFactory.getLogger(joinPoint.getSignature().getDeclaringTypeName());
     }
 
     /**
@@ -69,21 +60,12 @@ public class LoggingAspect {
     @AfterThrowing(pointcut = "applicationPackagePointcut() && springBeanPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
         if (env.acceptsProfiles(Profiles.of(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT))) {
-            logger(joinPoint)
-                .error(
-                    "Exception in {}() with cause = \'{}\' and exception = \'{}\'",
-                    joinPoint.getSignature().getName(),
-                    e.getCause() != null ? e.getCause() : "NULL",
-                    e.getMessage(),
-                    e
-                );
+            log.error("Exception in {}.{}() with cause = \'{}\' and exception = \'{}\'", joinPoint.getSignature().getDeclaringTypeName(),
+                joinPoint.getSignature().getName(), e.getCause() != null? e.getCause() : "NULL", e.getMessage(), e);
+
         } else {
-            logger(joinPoint)
-                .error(
-                    "Exception in {}() with cause = {}",
-                    joinPoint.getSignature().getName(),
-                    e.getCause() != null ? e.getCause() : "NULL"
-                );
+            log.error("Exception in {}.{}() with cause = {}", joinPoint.getSignature().getDeclaringTypeName(),
+                joinPoint.getSignature().getName(), e.getCause() != null? e.getCause() : "NULL");
         }
     }
 
@@ -96,18 +78,21 @@ public class LoggingAspect {
      */
     @Around("applicationPackagePointcut() && springBeanPointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        Logger log = logger(joinPoint);
         if (log.isDebugEnabled()) {
-            log.debug("Enter: {}() with argument[s] = {}", joinPoint.getSignature().getName(), Arrays.toString(joinPoint.getArgs()));
+            log.debug("Enter: {}.{}() with argument[s] = {}", joinPoint.getSignature().getDeclaringTypeName(),
+                joinPoint.getSignature().getName(), Arrays.toString(joinPoint.getArgs()));
         }
         try {
             Object result = joinPoint.proceed();
             if (log.isDebugEnabled()) {
-                log.debug("Exit: {}() with result = {}", joinPoint.getSignature().getName(), result);
+                log.debug("Exit: {}.{}() with result = {}", joinPoint.getSignature().getDeclaringTypeName(),
+                    joinPoint.getSignature().getName(), result);
             }
             return result;
         } catch (IllegalArgumentException e) {
-            log.error("Illegal argument: {} in {}()", Arrays.toString(joinPoint.getArgs()), joinPoint.getSignature().getName());
+            log.error("Illegal argument: {} in {}.{}()", Arrays.toString(joinPoint.getArgs()),
+                joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
+
             throw e;
         }
     }

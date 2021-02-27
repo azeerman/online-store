@@ -5,18 +5,20 @@ import { ICustomer } from 'app/shared/model/customer.model';
 
 @Component({
   selector: 'jhi-customer-detail',
-  templateUrl: './customer-detail.component.html',
+  templateUrl: './customer-detail.component.html'
 })
 export class CustomerDetailComponent implements OnInit {
-  customer: ICustomer | null = null;
+  customer: ICustomer;
 
   constructor(protected activatedRoute: ActivatedRoute) {}
 
-  ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ customer }) => (this.customer = customer));
+  ngOnInit() {
+    this.activatedRoute.data.subscribe(({ customer }) => {
+      this.customer = customer;
+    });
   }
 
-  previousState(): void {
+  previousState() {
     window.history.back();
   }
 }

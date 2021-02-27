@@ -5,18 +5,20 @@ import { IShipment } from 'app/shared/model/shipment.model';
 
 @Component({
   selector: 'jhi-shipment-detail',
-  templateUrl: './shipment-detail.component.html',
+  templateUrl: './shipment-detail.component.html'
 })
 export class ShipmentDetailComponent implements OnInit {
-  shipment: IShipment | null = null;
+  shipment: IShipment;
 
   constructor(protected activatedRoute: ActivatedRoute) {}
 
-  ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ shipment }) => (this.shipment = shipment));
+  ngOnInit() {
+    this.activatedRoute.data.subscribe(({ shipment }) => {
+      this.shipment = shipment;
+    });
   }
 
-  previousState(): void {
+  previousState() {
     window.history.back();
   }
 }

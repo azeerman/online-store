@@ -1,34 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, Routes, Router } from '@angular/router';
-import { Observable, of, EMPTY } from 'rxjs';
-import { flatMap } from 'rxjs/operators';
-
-import { Authority } from 'app/shared/constants/authority.constants';
+import { Resolve, ActivatedRouteSnapshot, Routes } from '@angular/router';
+import { JhiResolvePagingParams } from 'ng-jhipster';
 import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
-import { IOrderItem, OrderItem } from 'app/shared/model/order-item.model';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { OrderItem } from 'app/shared/model/order-item.model';
 import { OrderItemService } from './order-item.service';
 import { OrderItemComponent } from './order-item.component';
 import { OrderItemDetailComponent } from './order-item-detail.component';
 import { OrderItemUpdateComponent } from './order-item-update.component';
+import { IOrderItem } from 'app/shared/model/order-item.model';
 
 @Injectable({ providedIn: 'root' })
 export class OrderItemResolve implements Resolve<IOrderItem> {
-  constructor(private service: OrderItemService, private router: Router) {}
+  constructor(private service: OrderItemService) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<IOrderItem> | Observable<never> {
+  resolve(route: ActivatedRouteSnapshot): Observable<IOrderItem> {
     const id = route.params['id'];
     if (id) {
-      return this.service.find(id).pipe(
-        flatMap((orderItem: HttpResponse<OrderItem>) => {
-          if (orderItem.body) {
-            return of(orderItem.body);
-          } else {
-            this.router.navigate(['404']);
-            return EMPTY;
-          }
-        })
-      );
+      return this.service.find(id).pipe(map((orderItem: HttpResponse<OrderItem>) => orderItem.body));
     }
     return of(new OrderItem());
   }
@@ -38,47 +29,50 @@ export const orderItemRoute: Routes = [
   {
     path: '',
     component: OrderItemComponent,
-    data: {
-      authorities: [Authority.USER],
-      defaultSort: 'id,asc',
-      pageTitle: 'storeApp.orderItem.home.title',
+    resolve: {
+      pagingParams: JhiResolvePagingParams
     },
-    canActivate: [UserRouteAccessService],
+    data: {
+      authorities: ['ROLE_USER'],
+      defaultSort: 'id,asc',
+      pageTitle: 'storeApp.orderItem.home.title'
+    },
+    canActivate: [UserRouteAccessService]
   },
   {
     path: ':id/view',
     component: OrderItemDetailComponent,
     resolve: {
-      orderItem: OrderItemResolve,
+      orderItem: OrderItemResolve
     },
     data: {
-      authorities: [Authority.USER],
-      pageTitle: 'storeApp.orderItem.home.title',
+      authorities: ['ROLE_USER'],
+      pageTitle: 'storeApp.orderItem.home.title'
     },
-    canActivate: [UserRouteAccessService],
+    canActivate: [UserRouteAccessService]
   },
   {
     path: 'new',
     component: OrderItemUpdateComponent,
     resolve: {
-      orderItem: OrderItemResolve,
+      orderItem: OrderItemResolve
     },
     data: {
-      authorities: [Authority.USER],
-      pageTitle: 'storeApp.orderItem.home.title',
+      authorities: ['ROLE_USER'],
+      pageTitle: 'storeApp.orderItem.home.title'
     },
-    canActivate: [UserRouteAccessService],
+    canActivate: [UserRouteAccessService]
   },
   {
     path: ':id/edit',
     component: OrderItemUpdateComponent,
     resolve: {
-      orderItem: OrderItemResolve,
+      orderItem: OrderItemResolve
     },
     data: {
-      authorities: [Authority.USER],
-      pageTitle: 'storeApp.orderItem.home.title',
+      authorities: ['ROLE_USER'],
+      pageTitle: 'storeApp.orderItem.home.title'
     },
-    canActivate: [UserRouteAccessService],
-  },
+    canActivate: [UserRouteAccessService]
+  }
 ];

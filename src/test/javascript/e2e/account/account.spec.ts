@@ -7,8 +7,6 @@ const expect = chai.expect;
 describe('account', () => {
   let navBarPage: NavBarPage;
   let signInPage: SignInPage;
-  const username = process.env.E2E_USERNAME || 'admin';
-  const password = process.env.E2E_PASSWORD || 'admin';
   let passwordPage: PasswordPage;
   let settingsPage: SettingsPage;
 
@@ -22,7 +20,7 @@ describe('account', () => {
     const value1 = await element(by.css('h1')).getAttribute('jhiTranslate');
     expect(value1).to.eq(expect1);
     signInPage = await navBarPage.getSignInPage();
-    await signInPage.autoSignInUsing(username, 'foo');
+    await signInPage.autoSignInUsing('admin', 'foo');
 
     const expect2 = 'login.messages.error.authentication';
     const value2 = await element(by.css('.alert-danger')).getAttribute('jhiTranslate');
@@ -36,7 +34,7 @@ describe('account', () => {
     const expect1 = 'global.form.username.label';
     const value1 = await element(by.className('username-label')).getAttribute('jhiTranslate');
     expect(value1).to.eq(expect1);
-    await signInPage.autoSignInUsing(username, password);
+    await signInPage.autoSignInUsing('admin', 'admin');
 
     const expect2 = 'home.logged.message';
     await browser.wait(ec.visibilityOf(element(by.id('home-logged-message'))));
@@ -80,41 +78,25 @@ describe('account', () => {
 
     expect(await passwordPage.getTitle()).to.eq('password.title');
 
-    await passwordPage.setCurrentPassword(password);
+    await passwordPage.setCurrentPassword('admin');
     await passwordPage.setPassword('newpassword');
     await passwordPage.setConfirmPassword('newpassword');
     await passwordPage.save();
 
-    const successMsg = 'password.messages.success';
+    const expect2 = 'password.messages.success';
     const alert = element(by.css('.alert-success'));
-    const alertValue = await alert.getAttribute('jhiTranslate');
-    expect(alertValue).to.eq(successMsg);
+    const value2 = await alert.getAttribute('jhiTranslate');
+    expect(value2).to.eq(expect2);
     await navBarPage.autoSignOut();
     await navBarPage.goToSignInPage();
-    await signInPage.autoSignInUsing(username, 'newpassword');
+    await signInPage.autoSignInUsing('admin', 'newpassword');
 
     // change back to default
     await navBarPage.goToPasswordMenu();
     await passwordPage.setCurrentPassword('newpassword');
-    await passwordPage.setPassword(password);
-    await passwordPage.setConfirmPassword(password);
+    await passwordPage.setPassword('admin');
+    await passwordPage.setConfirmPassword('admin');
     await passwordPage.save();
-
-    // wait for success message
-    const alertValue2 = await alert.getAttribute('jhiTranslate');
-    expect(alertValue2).to.eq(successMsg);
-  });
-
-  it('should navigate to 404 not found error page on non existing route and show user own navbar if valid authentication exists', async () => {
-    // don't sign out and refresh page with non existing route
-    await browser.get('/this-is-link-to-non-existing-page');
-
-    // should navigate to 404 not found page
-    const url = await browser.getCurrentUrl();
-    expect(url).to.endWith('404');
-
-    // as user is admin then should show admin menu to user
-    await navBarPage.clickOnAdminMenu();
   });
 
   after(async () => {

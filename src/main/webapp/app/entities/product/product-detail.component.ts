@@ -6,26 +6,27 @@ import { IProduct } from 'app/shared/model/product.model';
 
 @Component({
   selector: 'jhi-product-detail',
-  templateUrl: './product-detail.component.html',
+  templateUrl: './product-detail.component.html'
 })
 export class ProductDetailComponent implements OnInit {
-  product: IProduct | null = null;
+  product: IProduct;
 
   constructor(protected dataUtils: JhiDataUtils, protected activatedRoute: ActivatedRoute) {}
 
-  ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ product }) => (this.product = product));
+  ngOnInit() {
+    this.activatedRoute.data.subscribe(({ product }) => {
+      this.product = product;
+    });
   }
 
-  byteSize(base64String: string): string {
-    return this.dataUtils.byteSize(base64String);
+  byteSize(field) {
+    return this.dataUtils.byteSize(field);
   }
 
-  openFile(contentType = '', base64String: string): void {
-    this.dataUtils.openFile(contentType, base64String);
+  openFile(contentType, field) {
+    return this.dataUtils.openFile(contentType, field);
   }
-
-  previousState(): void {
+  previousState() {
     window.history.back();
   }
 }

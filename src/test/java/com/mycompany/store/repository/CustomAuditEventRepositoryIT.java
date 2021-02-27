@@ -1,18 +1,9 @@
 package com.mycompany.store.repository;
 
-import static com.mycompany.store.repository.CustomAuditEventRepository.EVENT_DATA_COLUMN_MAX_LENGTH;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.mycompany.store.StoreApp;
 import com.mycompany.store.config.Constants;
 import com.mycompany.store.config.audit.AuditEventConverter;
 import com.mycompany.store.domain.PersistentAuditEvent;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +14,23 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static com.mycompany.store.repository.CustomAuditEventRepository.EVENT_DATA_COLUMN_MAX_LENGTH;
+
 /**
  * Integration tests for {@link CustomAuditEventRepository}.
  */
 @SpringBootTest(classes = StoreApp.class)
 @Transactional
 public class CustomAuditEventRepositoryIT {
+
     @Autowired
     private PersistenceAuditEventRepository persistenceAuditEventRepository;
 
@@ -37,13 +39,19 @@ public class CustomAuditEventRepositoryIT {
 
     private CustomAuditEventRepository customAuditEventRepository;
 
+    private PersistentAuditEvent testUserEvent;
+
+    private PersistentAuditEvent testOtherUserEvent;
+
+    private PersistentAuditEvent testOldUserEvent;
+
     @BeforeEach
     public void setup() {
         customAuditEventRepository = new CustomAuditEventRepository(persistenceAuditEventRepository, auditEventConverter);
         persistenceAuditEventRepository.deleteAll();
         Instant oneHourAgo = Instant.now().minusSeconds(3600);
 
-        PersistentAuditEvent testUserEvent = new PersistentAuditEvent();
+        testUserEvent = new PersistentAuditEvent();
         testUserEvent.setPrincipal("test-user");
         testUserEvent.setAuditEventType("test-type");
         testUserEvent.setAuditEventDate(oneHourAgo);
@@ -51,12 +59,12 @@ public class CustomAuditEventRepositoryIT {
         data.put("test-key", "test-value");
         testUserEvent.setData(data);
 
-        PersistentAuditEvent testOldUserEvent = new PersistentAuditEvent();
+        testOldUserEvent = new PersistentAuditEvent();
         testOldUserEvent.setPrincipal("test-user");
         testOldUserEvent.setAuditEventType("test-type");
         testOldUserEvent.setAuditEventDate(oneHourAgo.minusSeconds(10000));
 
-        PersistentAuditEvent testOtherUserEvent = new PersistentAuditEvent();
+        testOtherUserEvent = new PersistentAuditEvent();
         testOtherUserEvent.setPrincipal("other-test-user");
         testOtherUserEvent.setAuditEventType("test-type");
         testOtherUserEvent.setAuditEventDate(oneHourAgo);
@@ -151,4 +159,5 @@ public class CustomAuditEventRepositoryIT {
         List<PersistentAuditEvent> persistentAuditEvents = persistenceAuditEventRepository.findAll();
         assertThat(persistentAuditEvents).hasSize(0);
     }
+
 }

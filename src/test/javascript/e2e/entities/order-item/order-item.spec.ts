@@ -3,8 +3,8 @@ import { NavBarPage, SignInPage } from '../../page-objects/jhi-page-objects';
 
 import {
   OrderItemComponentsPage,
-  /* OrderItemDeleteDialog, */
-  OrderItemUpdatePage,
+  /* OrderItemDeleteDialog,
+   */ OrderItemUpdatePage
 } from './order-item.page-object';
 
 const expect = chai.expect;
@@ -29,7 +29,6 @@ describe('OrderItem e2e test', () => {
     orderItemComponentsPage = new OrderItemComponentsPage();
     await browser.wait(ec.visibilityOf(orderItemComponentsPage.title), 5000);
     expect(await orderItemComponentsPage.getTitle()).to.eq('storeApp.orderItem.home.title');
-    await browser.wait(ec.or(ec.visibilityOf(orderItemComponentsPage.entities), ec.visibilityOf(orderItemComponentsPage.noResult)), 1000);
   });
 
   it('should load create OrderItem page', async () => {
@@ -39,11 +38,10 @@ describe('OrderItem e2e test', () => {
     await orderItemUpdatePage.cancel();
   });
 
-  /* it('should create and save OrderItems', async () => {
+  /*  it('should create and save OrderItems', async () => {
         const nbButtonsBeforeCreate = await orderItemComponentsPage.countDeleteButtons();
 
         await orderItemComponentsPage.clickOnCreateButton();
-
         await promise.all([
             orderItemUpdatePage.setQuantityInput('5'),
             orderItemUpdatePage.setTotalPriceInput('5'),
@@ -51,17 +49,15 @@ describe('OrderItem e2e test', () => {
             orderItemUpdatePage.productSelectLastOption(),
             orderItemUpdatePage.orderSelectLastOption(),
         ]);
-
         expect(await orderItemUpdatePage.getQuantityInput()).to.eq('5', 'Expected quantity value to be equals to 5');
         expect(await orderItemUpdatePage.getTotalPriceInput()).to.eq('5', 'Expected totalPrice value to be equals to 5');
-
         await orderItemUpdatePage.save();
         expect(await orderItemUpdatePage.getSaveButton().isPresent(), 'Expected save button disappear').to.be.false;
 
         expect(await orderItemComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeCreate + 1, 'Expected one more entry in the table');
     }); */
 
-  /* it('should delete last OrderItem', async () => {
+  /*  it('should delete last OrderItem', async () => {
         const nbButtonsBeforeDelete = await orderItemComponentsPage.countDeleteButtons();
         await orderItemComponentsPage.clickOnLastDeleteButton();
 

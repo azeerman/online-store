@@ -4,22 +4,20 @@ export class ProductCategoryComponentsPage {
   createButton = element(by.id('jh-create-entity'));
   deleteButtons = element.all(by.css('jhi-product-category div table .btn-danger'));
   title = element.all(by.css('jhi-product-category div h2#page-heading span')).first();
-  noResult = element(by.id('no-result'));
-  entities = element(by.id('entities'));
 
-  async clickOnCreateButton(): Promise<void> {
+  async clickOnCreateButton() {
     await this.createButton.click();
   }
 
-  async clickOnLastDeleteButton(): Promise<void> {
+  async clickOnLastDeleteButton() {
     await this.deleteButtons.last().click();
   }
 
-  async countDeleteButtons(): Promise<number> {
+  async countDeleteButtons() {
     return this.deleteButtons.count();
   }
 
-  async getTitle(): Promise<string> {
+  async getTitle() {
     return this.title.getAttribute('jhiTranslate');
   }
 }
@@ -28,35 +26,34 @@ export class ProductCategoryUpdatePage {
   pageTitle = element(by.id('jhi-product-category-heading'));
   saveButton = element(by.id('save-entity'));
   cancelButton = element(by.id('cancel-save'));
-
   nameInput = element(by.id('field_name'));
   descriptionInput = element(by.id('field_description'));
 
-  async getPageTitle(): Promise<string> {
+  async getPageTitle() {
     return this.pageTitle.getAttribute('jhiTranslate');
   }
 
-  async setNameInput(name: string): Promise<void> {
+  async setNameInput(name) {
     await this.nameInput.sendKeys(name);
   }
 
-  async getNameInput(): Promise<string> {
+  async getNameInput() {
     return await this.nameInput.getAttribute('value');
   }
 
-  async setDescriptionInput(description: string): Promise<void> {
+  async setDescriptionInput(description) {
     await this.descriptionInput.sendKeys(description);
   }
 
-  async getDescriptionInput(): Promise<string> {
+  async getDescriptionInput() {
     return await this.descriptionInput.getAttribute('value');
   }
 
-  async save(): Promise<void> {
+  async save() {
     await this.saveButton.click();
   }
 
-  async cancel(): Promise<void> {
+  async cancel() {
     await this.cancelButton.click();
   }
 
@@ -69,11 +66,11 @@ export class ProductCategoryDeleteDialog {
   private dialogTitle = element(by.id('jhi-delete-productCategory-heading'));
   private confirmButton = element(by.id('jhi-confirm-delete-productCategory'));
 
-  async getDialogTitle(): Promise<string> {
+  async getDialogTitle() {
     return this.dialogTitle.getAttribute('jhiTranslate');
   }
 
-  async clickOnConfirmButton(): Promise<void> {
+  async clickOnConfirmButton() {
     await this.confirmButton.click();
   }
 }

@@ -1,22 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
 
-import { TrackerService } from 'app/core/tracker/tracker.service';
-import { TrackerActivity } from 'app/core/tracker/tracker-activity.model';
+import { JhiTrackerService } from 'app/core/tracker/tracker.service';
 
 @Component({
   selector: 'jhi-tracker',
-  templateUrl: './tracker.component.html',
+  templateUrl: './tracker.component.html'
 })
-export class TrackerComponent implements OnInit, OnDestroy {
-  activities: TrackerActivity[] = [];
-  subscription?: Subscription;
+export class JhiTrackerComponent implements OnInit, OnDestroy {
+  activities: any[] = [];
 
-  constructor(private trackerService: TrackerService) {}
+  constructor(private trackerService: JhiTrackerService) {}
 
-  showActivity(activity: TrackerActivity): void {
+  showActivity(activity: any) {
     let existingActivity = false;
-
     for (let index = 0; index < this.activities.length; index++) {
       if (this.activities[index].sessionId === activity.sessionId) {
         existingActivity = true;
@@ -27,23 +23,19 @@ export class TrackerComponent implements OnInit, OnDestroy {
         }
       }
     }
-
     if (!existingActivity && activity.page !== 'logout') {
       this.activities.push(activity);
     }
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.trackerService.subscribe();
-    this.subscription = this.trackerService.receive().subscribe((activity: TrackerActivity) => {
+    this.trackerService.receive().subscribe(activity => {
       this.showActivity(activity);
     });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.trackerService.unsubscribe();
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
   }
 }

@@ -5,14 +5,16 @@ import { User } from 'app/core/user/user.model';
 
 @Component({
   selector: 'jhi-user-mgmt-detail',
-  templateUrl: './user-management-detail.component.html',
+  templateUrl: './user-management-detail.component.html'
 })
 export class UserManagementDetailComponent implements OnInit {
-  user: User | null = null;
+  user: User;
 
   constructor(private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
-    this.route.data.subscribe(({ user }) => (this.user = user));
+  ngOnInit() {
+    this.route.data.subscribe(({ user }) => {
+      this.user = user.body ? user.body : user;
+    });
   }
 }

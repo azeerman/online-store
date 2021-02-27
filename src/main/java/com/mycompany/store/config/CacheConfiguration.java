@@ -1,29 +1,25 @@
 package com.mycompany.store.config;
 
-import com.hazelcast.config.*;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
 import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.config.JHipsterProperties;
-import io.github.jhipster.config.cache.PrefixedKeyGenerator;
-import javax.annotation.PreDestroy;
+
+import com.hazelcast.config.*;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.Hazelcast;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.info.BuildProperties;
-import org.springframework.boot.info.GitProperties;
+
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.*;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 
 @Configuration
 @EnableCaching
-public class CacheConfiguration {
-    private GitProperties gitProperties;
-    private BuildProperties buildProperties;
+public class CacheConfiguration implements DisposableBean {
 
     private final Logger log = LoggerFactory.getLogger(CacheConfiguration.class);
 
@@ -33,8 +29,8 @@ public class CacheConfiguration {
         this.env = env;
     }
 
-    @PreDestroy
-    public void destroy() {
+    @Override
+    public void destroy() throws Exception {
         log.info("Closing Cache Manager");
         Hazelcast.shutdownAll();
     }
@@ -68,7 +64,7 @@ public class CacheConfiguration {
         }
         config.getMapConfigs().put("default", initializeDefaultMapConfig(jHipsterProperties));
 
-        // Full reference is available at: https://docs.hazelcast.org/docs/management-center/3.9/manual/html/Deploying_and_Starting.html
+        // Full reference is available at: http://docs.hazelcast.org/docs/management-center/3.9/manual/html/Deploying_and_Starting.html
         config.setManagementCenterConfig(initializeDefaultManagementCenterConfig(jHipsterProperties));
         config.getMapConfigs().put("com.mycompany.store.domain.*", initializeDomainMapConfig(jHipsterProperties));
         return Hazelcast.newHazelcastInstance(config);
@@ -118,18 +114,4 @@ public class CacheConfiguration {
         return mapConfig;
     }
 
-    @Autowired(required = false)
-    public void setGitProperties(GitProperties gitProperties) {
-        this.gitProperties = gitProperties;
-    }
-
-    @Autowired(required = false)
-    public void setBuildProperties(BuildProperties buildProperties) {
-        this.buildProperties = buildProperties;
-    }
-
-    @Bean
-    public KeyGenerator keyGenerator() {
-        return new PrefixedKeyGenerator(this.gitProperties, this.buildProperties);
-    }
 }

@@ -5,18 +5,20 @@ import { IInvoice } from 'app/shared/model/invoice.model';
 
 @Component({
   selector: 'jhi-invoice-detail',
-  templateUrl: './invoice-detail.component.html',
+  templateUrl: './invoice-detail.component.html'
 })
 export class InvoiceDetailComponent implements OnInit {
-  invoice: IInvoice | null = null;
+  invoice: IInvoice;
 
   constructor(protected activatedRoute: ActivatedRoute) {}
 
-  ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ invoice }) => (this.invoice = invoice));
+  ngOnInit() {
+    this.activatedRoute.data.subscribe(({ invoice }) => {
+      this.invoice = invoice;
+    });
   }
 
-  previousState(): void {
+  previousState() {
     window.history.back();
   }
 }

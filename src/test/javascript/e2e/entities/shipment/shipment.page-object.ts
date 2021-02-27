@@ -4,22 +4,20 @@ export class ShipmentComponentsPage {
   createButton = element(by.id('jh-create-entity'));
   deleteButtons = element.all(by.css('jhi-shipment div table .btn-danger'));
   title = element.all(by.css('jhi-shipment div h2#page-heading span')).first();
-  noResult = element(by.id('no-result'));
-  entities = element(by.id('entities'));
 
-  async clickOnCreateButton(): Promise<void> {
+  async clickOnCreateButton() {
     await this.createButton.click();
   }
 
-  async clickOnLastDeleteButton(): Promise<void> {
+  async clickOnLastDeleteButton() {
     await this.deleteButtons.last().click();
   }
 
-  async countDeleteButtons(): Promise<number> {
+  async countDeleteButtons() {
     return this.deleteButtons.count();
   }
 
-  async getTitle(): Promise<string> {
+  async getTitle() {
     return this.title.getAttribute('jhiTranslate');
   }
 }
@@ -28,46 +26,47 @@ export class ShipmentUpdatePage {
   pageTitle = element(by.id('jhi-shipment-heading'));
   saveButton = element(by.id('save-entity'));
   cancelButton = element(by.id('cancel-save'));
-
   trackingCodeInput = element(by.id('field_trackingCode'));
   dateInput = element(by.id('field_date'));
   detailsInput = element(by.id('field_details'));
-
   invoiceSelect = element(by.id('field_invoice'));
 
-  async getPageTitle(): Promise<string> {
+  async getPageTitle() {
     return this.pageTitle.getAttribute('jhiTranslate');
   }
 
-  async setTrackingCodeInput(trackingCode: string): Promise<void> {
+  async setTrackingCodeInput(trackingCode) {
     await this.trackingCodeInput.sendKeys(trackingCode);
   }
 
-  async getTrackingCodeInput(): Promise<string> {
+  async getTrackingCodeInput() {
     return await this.trackingCodeInput.getAttribute('value');
   }
 
-  async setDateInput(date: string): Promise<void> {
+  async setDateInput(date) {
     await this.dateInput.sendKeys(date);
   }
 
-  async getDateInput(): Promise<string> {
+  async getDateInput() {
     return await this.dateInput.getAttribute('value');
   }
 
-  async setDetailsInput(details: string): Promise<void> {
+  async setDetailsInput(details) {
     await this.detailsInput.sendKeys(details);
   }
 
-  async getDetailsInput(): Promise<string> {
+  async getDetailsInput() {
     return await this.detailsInput.getAttribute('value');
   }
 
-  async invoiceSelectLastOption(): Promise<void> {
-    await this.invoiceSelect.all(by.tagName('option')).last().click();
+  async invoiceSelectLastOption() {
+    await this.invoiceSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
   }
 
-  async invoiceSelectOption(option: string): Promise<void> {
+  async invoiceSelectOption(option) {
     await this.invoiceSelect.sendKeys(option);
   }
 
@@ -75,15 +74,15 @@ export class ShipmentUpdatePage {
     return this.invoiceSelect;
   }
 
-  async getInvoiceSelectedOption(): Promise<string> {
+  async getInvoiceSelectedOption() {
     return await this.invoiceSelect.element(by.css('option:checked')).getText();
   }
 
-  async save(): Promise<void> {
+  async save() {
     await this.saveButton.click();
   }
 
-  async cancel(): Promise<void> {
+  async cancel() {
     await this.cancelButton.click();
   }
 
@@ -96,11 +95,11 @@ export class ShipmentDeleteDialog {
   private dialogTitle = element(by.id('jhi-delete-shipment-heading'));
   private confirmButton = element(by.id('jhi-confirm-delete-shipment'));
 
-  async getDialogTitle(): Promise<string> {
+  async getDialogTitle() {
     return this.dialogTitle.getAttribute('jhiTranslate');
   }
 
-  async clickOnConfirmButton(): Promise<void> {
+  async clickOnConfirmButton() {
     await this.confirmButton.click();
   }
 }

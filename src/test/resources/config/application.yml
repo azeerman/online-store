@@ -14,9 +14,6 @@
 # ===================================================================
 
 spring:
-  profiles:
-    # Uncomment the following line to enable tests against production database type rather than H2, using Testcontainers
-    #active: testcontainers
   application:
     name: store
   datasource:
@@ -27,11 +24,9 @@ spring:
     password:
     hikari:
       auto-commit: false
-  jackson:
-    serialization:
-      write-durations-as-timestamps: false
   jpa:
     database-platform: io.github.jhipster.domain.util.FixedH2Dialect
+    database: H2
     open-in-view: false
     show-sql: false
     hibernate:
@@ -55,6 +50,9 @@ spring:
     allow-bean-definition-overriding: true
   messages:
     basename: i18n/messages
+  mvc:
+    favicon:
+      enabled: false
   task:
     execution:
       thread-name-prefix: store-task-
@@ -84,7 +82,7 @@ jhipster:
     name: 'storeApp'
   logging:
     # To test json console appender
-    use-json-format: false
+    use-json-format: true # By default, logs are in Json format
     logstash:
       enabled: false
       host: localhost
@@ -97,7 +95,7 @@ jhipster:
     authentication:
       jwt:
         # This token must be encoded using Base64 (you can type `echo 'secret-key'|base64` on your command line)
-        base64-secret: NTIwMTAzYWZmNjliMmJkYzY0YzU4YjFiYjE2M2JlYTFjNTJmYTk2ZjAwZWEwNGVhMjM4YjM0MGY5NWJmMTU0ZGYyZGE5NmFlZmNhOGJjYjZlZTRhMTY1NWJhOTFlZTQ3OWJjZTQ2YTNkOTc3MGY4NzIzYjg2NjM2NjllNTgxYjM=
+        base64-secret: ZDgyOWIxNmU1MGY3MDc4NTFjNzM0ZjM0OGI2YWY1MjJkZTM3Mjk1MDM4MmEyN2IyMzYxZDMyMWIyMzg0ZTYwZjBmYTQzOTg4MzE4ODk2M2EzOTg5YmVmYjAwMDZlZDU5NjRiNzBlY2ZjMGU0NjFlOWU0YWNjNjZjMDY2OTZlZTA=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
   metrics:

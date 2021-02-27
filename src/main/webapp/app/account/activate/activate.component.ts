@@ -7,22 +7,28 @@ import { ActivateService } from './activate.service';
 
 @Component({
   selector: 'jhi-activate',
-  templateUrl: './activate.component.html',
+  templateUrl: './activate.component.html'
 })
 export class ActivateComponent implements OnInit {
-  error = false;
-  success = false;
+  error: string;
+  success: string;
 
   constructor(private activateService: ActivateService, private loginModalService: LoginModalService, private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.route.queryParams.pipe(flatMap(params => this.activateService.get(params.key))).subscribe(
-      () => (this.success = true),
-      () => (this.error = true)
+      () => {
+        this.error = null;
+        this.success = 'OK';
+      },
+      () => {
+        this.success = null;
+        this.error = 'ERROR';
+      }
     );
   }
 
-  login(): void {
+  login() {
     this.loginModalService.open();
   }
 }

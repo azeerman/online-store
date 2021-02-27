@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
-import { Authority } from 'app/shared/constants/authority.constants';
 import { StoreTestModule } from '../../../test.module';
 import { UserManagementDetailComponent } from 'app/admin/user-management/user-management-detail.component';
 import { User } from 'app/core/user/user.model';
@@ -11,8 +10,8 @@ describe('Component Tests', () => {
   describe('User Management Detail Component', () => {
     let comp: UserManagementDetailComponent;
     let fixture: ComponentFixture<UserManagementDetailComponent>;
-    const route: ActivatedRoute = ({
-      data: of({ user: new User(1, 'user', 'first', 'last', 'first@last.com', true, 'en', [Authority.USER], 'admin') }),
+    const route = ({
+      data: of({ user: new User(1, 'user', 'first', 'last', 'first@last.com', true, 'en', ['ROLE_USER'], 'admin', null, null, null) })
     } as any) as ActivatedRoute;
 
     beforeEach(async(() => {
@@ -22,9 +21,9 @@ describe('Component Tests', () => {
         providers: [
           {
             provide: ActivatedRoute,
-            useValue: route,
-          },
-        ],
+            useValue: route
+          }
+        ]
       })
         .overrideTemplate(UserManagementDetailComponent, '')
         .compileComponents();
@@ -52,8 +51,12 @@ describe('Component Tests', () => {
             email: 'first@last.com',
             activated: true,
             langKey: 'en',
-            authorities: [Authority.USER],
+            authorities: ['ROLE_USER'],
             createdBy: 'admin',
+            createdDate: null,
+            lastModifiedBy: null,
+            lastModifiedDate: null,
+            password: null
           })
         );
       });

@@ -3,14 +3,10 @@ package com.mycompany.store.web.rest;
 import com.mycompany.store.domain.Shipment;
 import com.mycompany.store.service.ShipmentService;
 import com.mycompany.store.web.rest.errors.BadRequestAlertException;
+
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +14,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * REST controller for managing {@link com.mycompany.store.domain.Shipment}.
@@ -28,6 +32,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api")
 public class ShipmentResource {
+
     private final Logger log = LoggerFactory.getLogger(ShipmentResource.class);
 
     private static final String ENTITY_NAME = "shipment";
@@ -49,14 +54,14 @@ public class ShipmentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/shipments")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Shipment> createShipment(@Valid @RequestBody Shipment shipment) throws URISyntaxException {
         log.debug("REST request to save Shipment : {}", shipment);
         if (shipment.getId() != null) {
             throw new BadRequestAlertException("A new shipment cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Shipment result = shipmentService.save(shipment);
-        return ResponseEntity
-            .created(new URI("/api/shipments/" + result.getId()))
+        return ResponseEntity.created(new URI("/api/shipments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
@@ -71,14 +76,14 @@ public class ShipmentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/shipments")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Shipment> updateShipment(@Valid @RequestBody Shipment shipment) throws URISyntaxException {
         log.debug("REST request to update Shipment : {}", shipment);
         if (shipment.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Shipment result = shipmentService.save(shipment);
-        return ResponseEntity
-            .ok()
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, shipment.getId().toString()))
             .body(result);
     }
@@ -86,7 +91,9 @@ public class ShipmentResource {
     /**
      * {@code GET  /shipments} : get all the shipments.
      *
+
      * @param pageable the pagination information.
+
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of shipments in body.
      */
     @GetMapping("/shipments")
@@ -117,12 +124,10 @@ public class ShipmentResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/shipments/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteShipment(@PathVariable Long id) {
         log.debug("REST request to delete Shipment : {}", id);
         shipmentService.delete(id);
-        return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-            .build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 }

@@ -10,11 +10,11 @@ import { ProductCategoryDeleteDialogComponent } from './product-category-delete-
 
 @Component({
   selector: 'jhi-product-category',
-  templateUrl: './product-category.component.html',
+  templateUrl: './product-category.component.html'
 })
 export class ProductCategoryComponent implements OnInit, OnDestroy {
-  productCategories?: IProductCategory[];
-  eventSubscriber?: Subscription;
+  productCategories: IProductCategory[];
+  eventSubscriber: Subscription;
 
   constructor(
     protected productCategoryService: ProductCategoryService,
@@ -22,31 +22,30 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
     protected modalService: NgbModal
   ) {}
 
-  loadAll(): void {
-    this.productCategoryService.query().subscribe((res: HttpResponse<IProductCategory[]>) => (this.productCategories = res.body || []));
+  loadAll() {
+    this.productCategoryService.query().subscribe((res: HttpResponse<IProductCategory[]>) => {
+      this.productCategories = res.body;
+    });
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadAll();
     this.registerChangeInProductCategories();
   }
 
-  ngOnDestroy(): void {
-    if (this.eventSubscriber) {
-      this.eventManager.destroy(this.eventSubscriber);
-    }
+  ngOnDestroy() {
+    this.eventManager.destroy(this.eventSubscriber);
   }
 
-  trackId(index: number, item: IProductCategory): number {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    return item.id!;
+  trackId(index: number, item: IProductCategory) {
+    return item.id;
   }
 
-  registerChangeInProductCategories(): void {
+  registerChangeInProductCategories() {
     this.eventSubscriber = this.eventManager.subscribe('productCategoryListModification', () => this.loadAll());
   }
 
-  delete(productCategory: IProductCategory): void {
+  delete(productCategory: IProductCategory) {
     const modalRef = this.modalService.open(ProductCategoryDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.productCategory = productCategory;
   }
