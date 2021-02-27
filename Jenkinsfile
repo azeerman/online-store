@@ -1,6 +1,10 @@
 #!/usr/bin/env groovy
 
 node {
+    stage('Clean WS ') {
+        deleteDir()
+    }
+
     stage('checkout') {
         checkout scm
     }
